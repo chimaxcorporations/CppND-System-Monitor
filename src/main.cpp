@@ -1,7 +1,8 @@
 #include "ncurses_display.h"
 #include "system.h"
 // #include "Utils.h"
-
+#include <iostream>
+#include "linux_parser.h"
 int main() {
   System system;
 //   Utils obj;
