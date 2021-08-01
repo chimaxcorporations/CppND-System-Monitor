@@ -110,7 +110,7 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-
+// Calculate memory utilization - Done
 float LinuxParser::MemoryUtilization() {
   string memTotal = "MemTotal:";
   string memFree = "MemFree:";
@@ -227,55 +227,46 @@ string LinuxParser::Command(int pid) {
 }
 //Done
 string LinuxParser::Ram(int pid) { 
-  string key, value, line, ram{"0"};
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
-  if (stream.is_open()){
-    while(std::getline(stream,line)){
-    std::istringstream linestream(line);
-      while (linestream>> key>>value){
-        if (key == "VmRSS:"){ //actual memory instead of virtual memory VmSize
-          ram =value;
-        }   
-      }  
-    }
-  }
-
-  return to_string(stoi(ram)/SCALE_DOWN);  
+  string keyFilter{"VmRSS"};
+  string filename = std::to_string(pid) + kStatusFilename;
+  int value = findValueByKey<double>(keyFilter,filename);
+  return to_string(value);
 }
 
 
 //Done
-string LinuxParser::Uid(int pid) {
-  string line, key, uid;
-  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatusFilename);
-  if(filestream.is_open()) {
-  	std::getline(filestream, line);
-  	std::istringstream linestream(line);
-  	linestream >> key >> uid;
-  }
-  return uid;
+string LinuxParser::Uid(int pid)
+{
+  string line, key, keyFilter{"Uid:"};
+  string filename =  to_string(pid) + kStatusFilename;
+  return findValueByKey<string>(keyFilter, filename);
+}
   
-  }
+
 //Done
 string LinuxParser::User(int pid) 
 {  
   string uid = Uid(pid);
-  string id{"null"}, x{"null"},line{"null"};
+  string id, x,line, user;
   string name = "DEFAULT";
   std::ifstream stream(kPasswordPath);
   if (stream.is_open()) 
   {
-      while (std::getline(stream, line)) {
+      while (std::getline(stream, line)) 
+      {
       std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
-      linestream >> name >> x >> id;
-      if (id == uid) {
-        return name;
-//         break;
+      while (linestream >> name >> x >> id)
+      {
+      	if (id == uid)
+        {
+        	return name;
+      	}
       }
     }
   }
-  return name; }
+  return user; 
+}
 
 //Done
 long LinuxParser::UpTime(int pid) 
@@ -293,4 +284,6 @@ long LinuxParser::UpTime(int pid)
     upTimePid = UpTime() - stol(value)/sysconf(_SC_CLK_TCK);
     return upTimePid;
   }
-  return upTimePid; }
+  return upTimePid;
+}
+
