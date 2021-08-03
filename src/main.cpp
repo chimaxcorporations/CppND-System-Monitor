@@ -1,14 +1,11 @@
 #include "ncurses_display.h"
 #include "system.h"
+#include "processor.h"
 // #include "Utils.h"
 #include <iostream>
 #include "linux_parser.h"
 int main() {
   System system;
-//   Utils obj;
-//   std::string text = "top";
-//   std::cout << text << obj.exec(text.c_str()) << std::endl;
-
   NCursesDisplay::Display(system);
-//   return 0;
+  return 0;
   }
