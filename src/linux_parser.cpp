@@ -166,9 +166,9 @@ long LinuxParser::ActiveJiffies(int pid) {
       linestream >> jif_val;
       active_jiffies += jif_val;
     }
-    return active_jiffies;
+    return active_jiffies/sysconf(_SC_CLK_TCK);
   }
-  return active_jiffies; }
+  return active_jiffies/sysconf(_SC_CLK_TCK); }
 
 // TODO: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() 
